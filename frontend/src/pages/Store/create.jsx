@@ -2,93 +2,80 @@ import React, { useState } from "react";
 import { api } from "../../service/api";
 import * as yup from "yup";
 
-
 export default function CreateStoreModal({ isOpen, closeModal, establishment }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [service, setService] = useState("");
-  const [cod_establishment, setCodEstablishment] = useState("");
 
   const [status, setStatus] = useState({
-    type: '',
-    mensage: ''
-  })
-
-  async function validate() {
-    let schema = yup.object().shape({
-      name: yup
-        .string("Erro: Necessário preencher o campo senha!")
-        .required("Erro: Necessário preencher o campo senha!")
-        .min(6, "A senha tem que ter no mínimo 6 caracters"),
-      description: yup
-        .string("Erro: Necessário preencher o campo email!")
-        .email("Erro: Necessário preencher o campo email!")
-        .required("Erro: Necessário preencher o campo email!"),
-      service: yup
-        .string("Erro: Necessário preencher o campo nome!")
-        .required("Erro: Necessário preencher o campo nome!"),
-    })
-  }
+    type: "",
+    message: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!(await validate())) return;
-    const isValid = await validateForm();
 
-    if (isValid) {
-      try {
-        const response = await api.post("api/store/", {
-          name,
-          description,
-          service,
-          cod_establishment: establishment,
-        });
+    try {
+      const formData = {
+        name,
+        description,
+        service,
+        cod_establishment: establishment,
+      };
 
-        setName("");
-        setDescription("");
-        setService("");
-        setCodEstablishment("");
+      const response = await api.post("api/store/", formData);
 
-        closeModal();
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      setShowError(true);
+      setName("");
+      setDescription("");
+      setService("");
+
+      closeModal();
+    } catch (error) {
+      console.log(error);
     }
   };
 
   async function validate() {
     let schema = yup.object().shape({
-      name: yup.string("Erro: Necessário preencher o campo nome!")
-        .required("Erro: Necessário preencher o campo nome!")
+      name: yup.string().required("Erro: Necessário preencher o campo nome!"),
+      description: yup
+        .string()
+        .required("Erro: Necessário preencher o campo descrição!"),
+      service: yup.string().required("Erro: Necessário preencher o campo serviço!"),
     });
 
     try {
-
+      await schema.validate({ name, description, service });
+      setStatus({
+        type: "success",
+        message: "Validação bem-sucedida!",
+      });
+      return true;
     } catch (err) {
       setStatus({
-        type: 'error',
-        mensagem: 
-      })
+        type: "error",
+        message: err.errors,
+      });
+      return false;
     }
   }
 
-
   return (
-    <div className={`modal ${isOpen ? "modal-open" : ""} `}>
+    <div className={`modal ${isOpen ? "modal-open" : ""}`}>
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-body">
-            <ToastContainer />
+            {status.type === "success" && <div>{status.message}</div>}
+            {status.type === "error" && <div>{status.message}</div>}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Nome:</label>
                 <input
                   type="text"
                   id="name"
-                  className=" w-full form-control  border border-gray-300"
+                  className="w-full form-control border border-gray-300"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -119,10 +106,10 @@ export default function CreateStoreModal({ isOpen, closeModal, establishment }) 
                   type="text"
                   id="cod_establishment"
                   className="form-control mt-2 w-full border border-gray-300 mb-7"
-                  value={cod_establishment}
+                  value={establishment}
                 />
               </div>
-              <button className={`bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold mt-4`}>
+              <button className="bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold mt-4">
                 Criar
               </button>
             </form>
@@ -131,4 +118,4 @@ export default function CreateStoreModal({ isOpen, closeModal, establishment }) 
       </div>
     </div>
   );
-};
+}

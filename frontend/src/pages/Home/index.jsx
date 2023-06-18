@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { api } from "../../service/api";
+import arrow_left_image from "../../assets/seta-esquerda.png"
 import plus from "../../assets/plus.png";
 import TemplateFormOrganization from "../../templates/templateFormOrganization";
 import DetailEstablishment from "../Establishment/detail";
 import CreateEstablishmentModal from "../Establishment/create";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [establishments, setEstablishments] = useState([]);
   const [isOpenForEdit, setIsOpenForEdit] = useState(false);
   const [isOpenForCreate, setIsOpenForCreate] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState(null);
+
+  const navigate = useNavigate()
 
   const ModalEdit = () => {
     setIsOpenForEdit(!isOpenForEdit);
@@ -38,10 +42,18 @@ export default function Home() {
     ModalEdit();
   };
 
+  function handlePage(e) {
+    e.preventDefault()
+
+    navigate("/signin")
+  }
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex items-center justify-between mb-4 mr-4">
+        <button className="w-5" onClick={handlePage}>
+          <img src={arrow_left_image} alt="voltar_login" />
+        </button>
         <h1 className="text-2xl font-bold">Estabelecimentos</h1>
         <button onClick={ModalCreate} className="flex items-center justify-center w-10">
           <img src={plus} alt="Criar_estabelecimento" />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../service/api";
-
+import * as yup from "yup";
 
 const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
   const [name, setName] = useState("");
@@ -11,9 +11,15 @@ const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
   const [state, setState] = useState("");
   const [category, setCategory] = useState("");
 
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!(await validate())) return;
 
     try {
       const response = await api.post("api/home/", {
@@ -39,6 +45,48 @@ const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
       console.log(error);
     }
   };
+
+  async function validate() {
+    let schema = yup.object().shape({
+      name: yup.string().required("Erro: Necessário preencher o campo nome!"),
+      address: yup
+        .string()
+        .required("Erro: Necessário preencher o campo endereço!"),
+      phone: yup.string().required("Erro: Necessário preencher o campo telefone!"),
+      businessType: yup
+        .string()
+        .required("Erro: Necessário preencher o campo tipo de negócio!"),
+      emailAddress: yup
+        .string()
+        .email("Erro: Endereço de e-mail inválido!")
+        .required("Erro: Necessário preencher o campo endereço de e-mail!"),
+      state: yup.string().required("Erro: Necessário preencher o campo estado!"),
+      category: yup.string().required("Erro: Necessário preencher o campo categoria!"),
+    });
+
+    try {
+      await schema.validate({
+        name,
+        address,
+        phone,
+        businessType,
+        emailAddress,
+        state,
+        category,
+      });
+      setStatus({
+        type: "success",
+        message: "Validação bem-sucedida!",
+      });
+      return true;
+    } catch (err) {
+      setStatus({
+        type: "error",
+        message: err.errors,
+      });
+      return false;
+    }
+  }
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""} `}>
@@ -116,7 +164,14 @@ const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
                   onChange={(e) => setCategory(e.target.value)}
                 />
               </div>
-              <button className={`bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold text-white"`}>
+              {status.type === "success" && <div>{status.message}</div>}
+              {status.type === "error" && (
+                <div className="text-red-500">{status.message}</div>
+              )}
+              <button
+                className="bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold text-white"
+                type="submit"
+              >
                 Criar
               </button>
             </form>
