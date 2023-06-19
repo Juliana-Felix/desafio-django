@@ -59,7 +59,11 @@ Desenvolvedora: Juliana Félix |  <link>julianafelix.dev@gmail.com</link>
 
      `yarn start`
 
- 
+ ### Testes
+comando para rodar os teste:
+
+` python manage.py test `
+
  ## Rotas
  
  <p> Ao inicializar o projeto, estará rodando nas seguintes rotas: </p>
@@ -67,7 +71,57 @@ Desenvolvedora: Juliana Félix |  <link>julianafelix.dev@gmail.com</link>
  http://localhost:3000/  (front-end)
  
  http://localhost:8000/api   (back-end)
- 
+  
+
+## Endpoints
+
+### Login 
+
+- Endpoint POST
+`/api/api/login/`
+ Formato do dado a ser enviado para login:
+`{ "name":"juliana", "username":"juliana", "email":"julianafelix.dev@gmail.com", "password":"servicenet" }`
+
+### Estabelecimento
+
+- Endpoint POST
+`/api/home/`
+ Formato do dado a ser enviado no body:
+`{ "name":"", "address":"", "phone":"", "business_type":"", "email_address":"", "state": "", "category":"" }`
+
+- Endpoint GET
+ `/api/home/{:id}`
+     ou
+`/api/home/`
+
+- Endpoint PUT
+`/api/home/:id` 
+ Formato do dado a ser enviado no body:
+  `{"":""}`
+
+- Endpoint DELETE
+`/api/home/{:id}` 
+
+
+### Loja
+
+- Endpoint POST
+`/api/store/`
+ Formato do dado a ser enviado
+`{ "name":"", "description":"", "service":"", "cod_establishment":# }`
+
+- Endpoint GET
+`api/store/`
+ou
+`api/store/:id`
+
+- Endpoint PUT
+`api/store/:id`
+- Formato do dado a ser enviado no body:
+  `{"":""}`
+
+- Endpoint DELETE
+
 ## Tecnologias 
 
 Este projeto foi desenvolvido utilizando as seguintes tecnologias
@@ -78,34 +132,5 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias
 * Infraestrutura em Docker
 * Front-end: React (Node.js)
 * Biblioteca CSS: TailwindCSS
-
-### Testes
-comando para rodar os teste:
-
-` python manage.py test `
-
-### Endpoints
-
-* Estabelecimento (Método POST)
-
-Endpoint
-`/api/home/`
-- Formato do dado a ser enviado
-`{ "name":"", "address":"", "phone":"", "business_type":"", "email_address":"", "state": "", "category":"" }`
-
-Endpoint
-Loja (Método POST)
-
-Endpoint
-`/api/store/`
-- Formato do dado a ser enviado
-`{ "name":"", "description":"", "service":"", "cod_establishment":# }`
-
-Endpoint
-- Login (Método GET)
-
-Endpoint
-`api/login/`
-Formato do dado a ser enviado
-`{ "name":"juliana", "username":"juliana", "email":"julianafelix.dev@gmail.com", "password":"servicenet" }`
+`api/store/:id`
 
