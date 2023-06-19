@@ -79,6 +79,11 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias
 * Front-end: React (Node.js)
 * Biblioteca CSS: TailwindCSS
 
+### Testes
+comando para rodar os teste:
+
+` python manage.py test `
+
 ### Endpoints
 
 * Estabelecimento (Método POST)
