@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { api } from "../../service/api";
+import * as yup from "yup";
+import Alert from "../../templates/validacao/templateValidacaoForms";
 import trash_image from "../../assets/lixo.png";
 
 const DetailStore = ({ store }) => {
   const [editedStore, setEditedStore] = useState(store);
   const [isSaving, setIsSaving] = useState(false);
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -15,9 +21,10 @@ const DetailStore = ({ store }) => {
   };
 
   const handleSaveChanges = async () => {
+    if (!(await validate())) return;
+
     try {
       setIsSaving(true);
-      console.log(store.id)
       const response = await api.put(`api/store/${editedStore.id}/`, editedStore);
       console.log(response);
     } catch (error) {
@@ -29,9 +36,34 @@ const DetailStore = ({ store }) => {
 
   const deleteRegister = async () => {
     try {
-      const response = await api.delete(`api/store/${editedStore.id}/`)
+      const response = await api.delete(`api/store/${editedStore.id}/`);
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    }
+  };
+
+  async function validate() {
+    let schema = yup.object().shape({
+      name: yup.string().required("Erro: Necessário preencher o campo nome!"),
+      description: yup
+        .string()
+        .required("Erro: Necessário preencher o campo descrição!"),
+      service: yup.string().required("Erro: Necessário preencher o campo serviço!"),
+    });
+
+    try {
+      await schema.validate(editedStore);
+      setStatus({
+        type: "success",
+        message: "Validação bem-sucedida!",
+      });
+      return true;
+    } catch (err) {
+      setStatus({
+        type: "error",
+        message: err.errors,
+      });
+      return false;
     }
   }
 
@@ -66,6 +98,7 @@ const DetailStore = ({ store }) => {
           <img src={trash_image} alt="delete_establishment" className="w-6" />
         </button>
       </div>
+      {status.type && <Alert type={status.type} message={status.message} />}
       <p className="mb-4">
         <span className="font-semibold">Descrição:</span>{" "}
         <input

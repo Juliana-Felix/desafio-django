@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { api } from "../../service/api";
 import * as yup from "yup";
+import Alert from "../../templates/validacao/templateValidacaoForms"; // Importe o componente Alert aqui
 
 const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
   const [name, setName] = useState("");
@@ -164,12 +165,13 @@ const CreateEstablishmentModal = ({ isOpen, closeModal }) => {
                   onChange={(e) => setCategory(e.target.value)}
                 />
               </div>
-              {status.type === "success" && <div>{status.message}</div>}
-              {status.type === "error" && (
-                <div className="text-red-500">{status.message}</div>
+
+              {status.type && (
+                <Alert type={status.type} message={status.message} />
               )}
+
               <button
-                className="bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold text-white"
+                className="bg-violet-500 text-white px-4 py-2 w-full rounded-lg font-semibold"
                 type="submit"
               >
                 Criar

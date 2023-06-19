@@ -11,12 +11,10 @@ from .serializers import EstablishmentSerializer, StoreSerializer, ContactStoreS
 class ApiViews:
     @api_view(['POST'])
     def login(request):
-        # Lógica para autenticação do usuário
         return Response()
 
     @api_view(['POST'])
     def logout(request):
-        # Lógica para fazer logout do usuário
         return Response()
 
     @api_view(['POST'])

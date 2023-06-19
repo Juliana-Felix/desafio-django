@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { api } from "../../service/api";
 import * as yup from "yup";
+import Alert from "../../templates/validacao/templateValidacaoForms";
 
 export default function CreateStoreModal({ isOpen, closeModal, establishment }) {
   const [name, setName] = useState("");
@@ -67,8 +68,7 @@ export default function CreateStoreModal({ isOpen, closeModal, establishment }) 
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-body">
-            {status.type === "success" && <div>{status.message}</div>}
-            {status.type === "error" && <div>{status.message}</div>}
+            {status.type && <Alert type={status.type} message={status.message} />}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Nome:</label>

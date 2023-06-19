@@ -3,8 +3,7 @@ import thunk from 'redux-thunk';
 
 const initialState = {
   establishmentId: null,
-  username: '',
-  establishmentsCount: 0
+  username: ''
 };
 
 export const setEstablishmentId = (id) => ({
@@ -17,10 +16,6 @@ export const setUsername = (username) => ({
   payload: username
 });
 
-export const setEstablishmentsCount = (establishmentsCount) => ({
-  type: 'SET_ESTABLISHMENT',
-  payload: establishmentsCount
-})
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -28,8 +23,6 @@ const reducer = (state = initialState, action) => {
         return { ...state, establishmentId: action.payload };
       case 'SET_USERNAME':
         return { ...state, username: action.payload };
-      case 'SET_ESTABLISHMENTS_COUNT':
-          return { ...state, establishmentsCount: action.payload };
       default:
         return state;
   }

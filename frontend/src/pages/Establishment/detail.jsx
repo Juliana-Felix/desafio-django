@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { api } from "../../service/api";
+import * as yup from "yup";
+import Alert from "../../templates/validacao/templateValidacaoForms";
 import trash_image from "../../assets/lixo.png";
 import arrow_image from "../../assets/seta-direita.png";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +11,12 @@ import { setEstablishmentId } from "../../redux/store";
 const DetailEstablishment = ({ establishment }) => {
   const [editedEstablishment, setEditedEstablishment] = useState(establishment);
   const [isSaving, setIsSaving] = useState(false);
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
+  });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const establishmentID = useSelector((state) => state.establishmentID);
 
@@ -23,10 +29,14 @@ const DetailEstablishment = ({ establishment }) => {
   };
 
   const handleSaveChanges = async () => {
+    if (!(await validate())) return;
+
     try {
       setIsSaving(true);
-      console.log(establishment.id)
-      const response = await api.put(`api/home/${editedEstablishment.id}/`, editedEstablishment);
+      const response = await api.put(
+        `api/home/${editedEstablishment.id}/`,
+        editedEstablishment
+      );
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -38,19 +48,49 @@ const DetailEstablishment = ({ establishment }) => {
   const handlePage = async (e) => {
     e.preventDefault();
     try {
-      dispatch(setEstablishmentId(editedEstablishment.id))
-      console.log(editedEstablishment)
-      navigate("/stores")
+      dispatch(setEstablishmentId(editedEstablishment.id));
+      console.log(editedEstablishment);
+      navigate("/stores");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const deleteRegister = async () => {
     try {
-      const response = await api.delete(`api/home/${editedEstablishment.id}/`)
+      const response = await api.delete(
+        `api/home/${editedEstablishment.id}/`
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    }
+  };
+
+  async function validate() {
+    let schema = yup.object().shape({
+      name: yup.string().required("Erro: Necessário preencher o campo nome!"),
+      category: yup
+        .string()
+        .required("Erro: Necessário preencher o campo categoria!"),
+      address: yup
+        .string()
+        .required("Erro: Necessário preencher o campo endereço!"),
+      state: yup.string().required("Erro: Necessário preencher o campo estado!"),
+    });
+
+    try {
+      await schema.validate(editedEstablishment);
+      setStatus({
+        type: "success",
+        message: "Validação bem-sucedida!",
+      });
+      return true;
+    } catch (err) {
+      setStatus({
+        type: "error",
+        message: err.errors,
+      });
+      return false;
     }
   }
 
@@ -122,6 +162,9 @@ const DetailEstablishment = ({ establishment }) => {
         Visualizar Lojas
         <img className="w-4 ml-1" src={arrow_image} alt="go_to_stores" />
       </span>
+      {status.type && (
+        <Alert type={status.type} message={status.message} />
+      )}
     </div>
   );
 };
